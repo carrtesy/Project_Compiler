@@ -7,5 +7,8 @@ scan = scanner(code)
 scan.lexical()
 token = scan.tokens
 
-for i in token:
-    print(i)
+if token[-1]:
+    for i in token:
+        print(i)
+else:
+    print("Error occurred in lexical analysis")

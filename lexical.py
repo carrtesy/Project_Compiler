@@ -47,7 +47,8 @@ class scanner():
                     i +=1
 
                 else:
-                    return 0 # if error in lexical analysics return 0
+                    self.tokens.append(0)
+                    return
 
     def check_equal(self, i):
         if self.code[i] == '=' and i < self.length -1 :
