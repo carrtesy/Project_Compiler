@@ -1,0 +1,14 @@
+int a, b, c = 1;
+char d, e;
+
+b = 3
+
+a = b + 14 + 0;
+d = 4;
+
+IF (a+1 > c) THEN {
+	e=5;
+}
+ELSE {
+	e=3;
+}
