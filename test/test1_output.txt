@@ -1,0 +1,19 @@
+LD Reg#1, 0
+LD Reg#2, 1
+LD Reg#3, 100
+ADD Reg#4, Reg#1, Reg#2
+
+LOOP
+LT Reg#5, Reg#4, Reg#3
+JUMPF Reg#5 END
+LD Reg#6, 0
+MUL Reg#6, Reg#2, Reg#2
+ADD Reg#1, Reg#1, Reg#6
+ADD Reg#2, Reg#2, 1
+END
+
+LT Reg#7, Reg#3, Reg#1
+JUMPF Reg#7 FALSE
+ST Reg#1, addr
+FALSE
+ST Reg#2, addr 
