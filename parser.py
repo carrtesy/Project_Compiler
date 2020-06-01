@@ -7,6 +7,7 @@ class parser():
     def __init__(self, tokens, grammar_path):
         self.tokens = tokens
         self.grammar_path = grammar_path
+        self.grammar = self.grammar_to_LL()
 
     def set_grammar(self):
         with open(self.grammar_path, 'r', encoding="utf-8") as g:
@@ -34,6 +35,7 @@ class parser():
         grammar = self.set_grammar()
         Recursion_Removed_grammar = self.Remove_Left_Recursion(grammar)
         Factoring_Removed_grammar = self.Remove_Left_factoring(Recursion_Removed_grammar)
+
         return grammar
 
     def Remove_Left_Recursion(self, grammar):
@@ -60,7 +62,7 @@ class parser():
 
                 for val in recursion:
                     grammar[prime].append(val + [prime])
-                grammar[prime].append([])
+                grammar[prime].append([""])
         return grammar
 
 
@@ -89,16 +91,70 @@ class parser():
                             grammar[key].append([value,prime])
 
                         if not (values[i][1:]) in grammar[prime]:
-                            grammar[prime].append(values[i][1:])
+                            if values[i][1:]:
+                                grammar[prime].append(values[i][1:])
+                            elif not [""] in grammar[prime]:
+                                grammar[prime].append([""])
 
                         if (values[i]) in grammar[key]:
                             grammar[key].remove(values[i])
                         if not (values[j][1:]) in grammar[prime]:
-                            grammar[prime].append(values[j][1:])
+                            if values[j][1:]:
+                                grammar[prime].append(values[j][1:])
+                            elif not [""] in grammar[prime]:
+                                grammar[prime].append([""])
+
                         if (values[j]) in grammar[key]:
                             grammar[key].remove(values[j])
             index += 1
         return grammar
+
+    def get_FIRST(self):
+        self.first = dict()
+        keys = list(self.grammar.keys())
+        for key in keys:
+            self.first[key] = self.FIRST(key)
+
+    def FIRST(self,key):
+        keys = list(self.grammar.keys())
+        values = self.grammar[key]
+        first = set()
+        for value in values:
+
+            if value[0] in keys:
+                for symbol in value:
+                    fst = self.FIRST(symbol)
+                    if len(fst) != 0:
+                        first = first.union(fst)
+                        break
+
+            else:
+                first = first.union({value[0]})
+        return first
+
+    def get_FOLLOW(self):
+        self.follow = dict()
+        keys = list(self.grammar.keys())
+        for key in keys:
+            self.follow[key] = self.FOLLOW(key)
+    def FOLLOW(self,key):
+        keys = list(self.grammar.keys())
+        values = self.grammar[key]
+        follow = set()
+        if key == keys[0]:
+            follow.union({"$"})
+        for value in values:
+            for i in range(len(value)):
+                symbol = value[i]
+
+                first = self.FIRST()
+                if i < len(value):
+                    follow.union(self.FIRST())
+
+
+
+
+
 
 if __name__ == "__main__":
     with open("testfile.txt",'r') as test:
@@ -110,5 +166,6 @@ if __name__ == "__main__":
     tokens = scan.tokens
 
     parsing = parser(tokens,"grammar.txt")
-    gr = parsing.grammar_to_LL()
-    print(gr)
+    parsing.get_FIRST()
+    print(parsing.grammar)
+    print(parsing.first)
