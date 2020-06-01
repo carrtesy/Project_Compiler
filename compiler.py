@@ -5,10 +5,17 @@ with open("testfile.txt", 'r') as txt:
 
 scan = scanner(code)
 scan.lexical()
-token = scan.tokens
+tokens = scan.tokens
 
-if token[-1]:
-    for i in token:
+
+if tokens[-1]:
+    for i in tokens:
         print(i)
+
+
+
 else:
     print("Error occurred in lexical analysis")
+
+
+if __name__ == "__main__":

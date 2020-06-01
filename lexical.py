@@ -1,4 +1,4 @@
-
+import sys
 class scanner():
     def __init__(self, code: str):
         self.code = code
@@ -15,17 +15,17 @@ class scanner():
         while i < self.length:
             if self.code[i].isdigit(): # num
                 token = self.get_number(i)
-                self.tokens.append('Num token :' + token)
+                self.tokens.append(['Num token', token])
                 i += len(token)
 
             elif self.code[i].isalpha(): #word or type or statement
                 token = self.get_alphabet(i)
                 if token in self.types:
-                    self.tokens.append('Type token :'+ token)
+                    self.tokens.append(['Type token :', token])
                 elif token in self.statement:
-                    self.tokens.append('Statement token :' + token)
+                    self.tokens.append(['Statement token :', token])
                 else:
-                    self.tokens.append('Word token :' + token)
+                    self.tokens.append(['Word token :', token])
                 i += len(token)
 
             elif self.code[i].isspace(): #space, \n, \t
@@ -37,18 +37,19 @@ class scanner():
                     i += 1
                 elif self.code[i] in self.operator:
                     if self.check_equal(i):
-                        self.tokens.append('Operator token : ' + '==')
+                        self.tokens.append(['Operator token : ', '=='])
                         i += 2
                     else :
-                        self.tokens.append('Operator token : ' + self.code[i])
+                        self.tokens.append(['Operator token : ', self.code[i]])
                         i += 1
                 elif self.code[i] in self.special_character:
-                    self.tokens.append('Other token : '+self.code[i])
+                    self.tokens.append(['Other token : ',self.code[i]])
                     i +=1
 
                 else:
                     self.tokens.append(0)
-                    return
+                    print("Error occurr-ed in lexical analysis")
+                    sys.exit()
 
     def check_equal(self, i):
         if self.code[i] == '=' and i < self.length -1 :
