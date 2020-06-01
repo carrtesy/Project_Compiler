@@ -9,6 +9,43 @@ class parser():
         self.grammar_path = grammar_path
         self.grammar = self.grammar_to_LL()
 
+
+
+    def grammar_to_LL(self):
+        grammar = self.set_grammar()
+        Recursion_Removed_grammar = self.Remove_Left_Recursion(grammar)
+        Factoring_Removed_grammar = self.Remove_Left_factoring(Recursion_Removed_grammar)
+
+        return grammar
+
+    def get_FIRST(self):
+        self.first = dict()
+        keys = list(self.grammar.keys())
+        for key in keys:
+            self.first[key] = self.FIRST(key)
+
+    def get_FOLLOW(self):
+        self.follow = dict()
+        keys = list(self.grammar.keys())
+        for key in keys:
+            self.follow[key] = set([])
+        self.follow[keys[0]] = self.follow[keys[0]].union({"$"})
+        for key in keys:
+            self.FOLLOW(key)
+
+    def get_Table(self):
+        self.table = []
+        self.classify_symbol()
+        for i, terminal in enumerate(self.terminal):
+            self.table.append([])
+            for non_terminal in (self.non_terminal + ["$"]):
+                self.table[i].append([])
+
+
+
+
+
+
     def set_grammar(self):
         with open(self.grammar_path, 'r', encoding="utf-8") as g:
             grammar_txt = g.read()
@@ -26,15 +63,6 @@ class parser():
                     grammar[key].append(val)
                 else:
                     grammar[key].append([""])
-
-        return grammar
-
-
-
-    def grammar_to_LL(self):
-        grammar = self.set_grammar()
-        Recursion_Removed_grammar = self.Remove_Left_Recursion(grammar)
-        Factoring_Removed_grammar = self.Remove_Left_factoring(Recursion_Removed_grammar)
 
         return grammar
 
@@ -109,11 +137,6 @@ class parser():
             index += 1
         return grammar
 
-    def get_FIRST(self):
-        self.first = dict()
-        keys = list(self.grammar.keys())
-        for key in keys:
-            self.first[key] = self.FIRST(key)
 
     def FIRST(self,key):
         keys = list(self.grammar.keys())
@@ -132,24 +155,39 @@ class parser():
                 first = first.union({value[0]})
         return first
 
-    def get_FOLLOW(self):
-        self.follow = dict()
+
+    def FOLLOW(self,symbol):
         keys = list(self.grammar.keys())
         for key in keys:
-            self.follow[key] = self.FOLLOW(key)
-    def FOLLOW(self,key):
-        keys = list(self.grammar.keys())
-        values = self.grammar[key]
-        follow = set()
-        if key == keys[0]:
-            follow.union({"$"})
-        for value in values:
-            for i in range(len(value)):
-                symbol = value[i]
+            for values in self.grammar[key]:
+                for i in range(len(values)):
+                    if values[i] == symbol:
+                        if i < (len(values) - 1):
+                            if values[i+1] in keys:
+                                next_first = self.first[values[i+1]]
+                            else:
+                                next_first = {values[i+1]}
+                            if '' in next_first and key != symbol:
+                                if not key in list(self.follow.keys()):
+                                    self.FOLLOW(key)
+                                self.follow[symbol] = self.follow[symbol].union(self.follow[key])
+                            self.follow[symbol] = self.follow[symbol].union(next_first-{''})
 
-                first = self.FIRST()
-                if i < len(value):
-                    follow.union(self.FIRST())
+                        else:
+                            if key!=symbol:
+                                if not key in list(self.follow.keys()):
+                                    self.FOLLOW(key)
+                                self.follow[symbol] = self.follow[symbol].union(self.follow[key])
+
+    def classify_symbol(self):
+        self.terminal = list(self.grammar.keys())
+        self.non_terminal = set()
+        for terminal in self.terminal:
+            for values in self.grammar[terminal]:
+                for value in values:
+                    if not value in (self.terminal + ['']):
+                        self.non_terminal = self.non_terminal.union({value})
+        self.non_terminal = list(self.non_terminal)
 
 
 
@@ -167,5 +205,22 @@ if __name__ == "__main__":
 
     parsing = parser(tokens,"grammar.txt")
     parsing.get_FIRST()
-    print(parsing.grammar)
-    print(parsing.first)
+    parsing.get_FOLLOW()
+    parsing.get_Table()
+    print("LL Grammar")
+    for i in parsing.grammar:
+        print(i,parsing.grammar[i])
+    print("\nFIRST")
+    for i in parsing.first:
+        print(i, parsing.first[i])
+
+    print("\nFOLLOW")
+    for i in parsing.follow:
+        print(i, parsing.follow[i])
+    print("\n terminals")
+    print(parsing.terminal)
+    print("\n non terminals")
+    print(parsing.non_terminal)
+
+    print("\nTable")
+    print(len(parsing.table),len(parsing.table[0]))
