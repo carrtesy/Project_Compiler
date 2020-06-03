@@ -1,6 +1,11 @@
 from lexical import scanner
+import os
 
-with open("testfile.txt", 'r') as txt:
+dir = os.path.dirname(__file__)
+tnum = input("Enter testfile number (1 ~ 15): ")
+fname = os.path.join(dir, 'testfiles/' + 'testfile_' + tnum + '.txt')
+
+with open(fname, 'r') as txt:
     code = txt.read()
 
 scan = scanner(code)

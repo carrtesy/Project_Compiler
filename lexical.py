@@ -6,7 +6,7 @@ class scanner():
         self.Bracket = ['(', ')', '{', '}']
         self.special_character = [';',',']
         self.types = ['int', 'char']
-        self.statement = ['IF', 'THEN', 'ELSE' ]
+        self.statement = ['IF', 'THEN', 'ELSE', 'WHILE' ]
         self.operator = ['>', '==', '+', '*', '=']
         self.tokens = []
 
