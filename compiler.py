@@ -3,7 +3,7 @@ import os
 
 dir = os.path.dirname(__file__)
 tnum = input("Enter testfile number (1 ~ 15): ")
-fname = os.path.join(dir, 'testfiles/' + 'testfile_' + tnum + '.txt')
+fname = os.path.join(dir, 'testfiles/' + 'testfile_' + tnum + '.txt') #will change into parameter parsing w. various options later -지영현
 
 with open(fname, 'r') as txt:
     code = txt.read()
