@@ -22,4 +22,5 @@ expr -> term
 term -> fact
 | fact "*" fact ;
 fact -> num
-| word ;
+| word
+

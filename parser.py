@@ -1,6 +1,6 @@
 import sys
 from lexical import scanner
-
+from parse_tree import Node
 
 class parser():
     def __init__(self, tokens, grammar_path):
@@ -63,15 +63,39 @@ class parser():
         non_terminal = { key : word for word, key in enumerate(self.non_terminal)}
         non_terminal['$'] = len(non_terminal)
         input_txt.append("$")
-        stack = ['$',self.terminal[0]]
-
-        # while len(stack) != 0:
-        #     top = stack[-1].pop()
-        #     if top == input_txt[0]:
-        #         pass
-
-
-
+        stack = [self.terminal[0],'$']
+        self.parse_tree = Node(stack[-1],None,0)
+        check = False
+        while len(stack) != 1:
+            top = stack[0]
+            stack = stack[1:]
+            # print(stack, input_txt)
+            symbol = input_txt[0]
+            if top in non_terminal:
+                if symbol == top:
+                    input_txt = input_txt[1:]
+                    self.parse_tree = self.parse_tree.get_next()
+                else:
+                    check = True
+                    break
+            else:
+                push = self.table[terminal[top]][non_terminal[symbol]]
+                if push != 0 :
+                    if push != ['']:
+                        stack = push + stack
+                        self.parse_tree.set_child(push)
+                        self.parse_tree = self.parse_tree.children[0]
+                    else:
+                        self.parse_tree.set_child([''])
+                        self.parse_tree = self.parse_tree.get_next()
+                else:
+                    check = True
+                    break
+        if check:
+            return None
+        else:
+            self.parse_tree = self.parse_tree.get_root()
+            return self.parse_tree
 
 
 
@@ -241,26 +265,21 @@ class parser():
         self.non_terminal.sort()
 
 
-
-
-
-
 if __name__ == "__main__":
-    with open("testfile.txt",'r') as test:
+    with open("testfile.txt", 'r') as test:
         code = test.read()
-
 
     scan = scanner(code)
     scan.lexical()
     tokens = scan.tokens
 
-    parsing = parser(tokens,"grammar.txt")
+    parsing = parser(tokens, "grammar2.txt")
     parsing.get_FIRST()
     parsing.get_FOLLOW()
     parsing.get_Table()
     print("LL Grammar")
     for i in parsing.grammar:
-        print(i,parsing.grammar[i])
+        print(i, parsing.grammar[i])
     print("\nFIRST")
     for i in parsing.first:
         print(i, parsing.first[i])
@@ -274,7 +293,15 @@ if __name__ == "__main__":
     print(parsing.non_terminal)
 
     print("\nTable")
-    print(parsing.non_terminal+['$'])
+    print(parsing.non_terminal + ['$'])
     for i in range(len(parsing.table)):
-        print(parsing.terminal[i],parsing.table[i])
-    parsing.parsing("GER")
+        print(parsing.terminal[i], parsing.table[i])
+
+    print()
+    asdf = parsing.parsing(["word", '"("', '")"'])
+    if asdf:
+        parsing.parse_tree.node_print()
+    else:
+        print("input not accecpted")
+
+
