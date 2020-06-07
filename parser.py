@@ -65,10 +65,10 @@ class parser():
         input_txt.append("$")
         stack = ['$',self.terminal[0]]
 
-        while len(stack) != 0:
-            top = stack[-1].pop()
-            if top == input_txt[0]:
-
+        # while len(stack) != 0:
+        #     top = stack[-1].pop()
+        #     if top == input_txt[0]:
+        #         pass
 
 
 
