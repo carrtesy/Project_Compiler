@@ -1,4 +1,4 @@
-
+import sys
 class scanner():
     def __init__(self, code: str):
         self.code = code
@@ -6,29 +6,26 @@ class scanner():
         self.Bracket = ['(', ')', '{', '}']
         self.special_character = [';',',']
         self.types = ['int', 'char']
-        self.statement = ['IF', 'THEN', 'ELSE', 'WHILE' ]
+        self.statement = ['IF', 'THEN', 'ELSE' ]
         self.operator = ['>', '==', '+', '*', '=']
         self.tokens = []
 
     def lexical(self):
         i = 0
-        linectr = 0
         while i < self.length:
-            if self.code[i] == '\n': #counts \n for error message if lexical analysis fails
-                linectr += 1
             if self.code[i].isdigit(): # num
                 token = self.get_number(i)
-                self.tokens.append('Num token :' + token)
+                self.tokens.append(['Num token', token])
                 i += len(token)
 
             elif self.code[i].isalpha(): #word or type or statement
                 token = self.get_alphabet(i)
                 if token in self.types:
-                    self.tokens.append('Type token :'+ token)
+                    self.tokens.append(['Type token :', token])
                 elif token in self.statement:
-                    self.tokens.append('Statement token :' + token)
+                    self.tokens.append(['Statement token :', token])
                 else:
-                    self.tokens.append('Word token :' + token)
+                    self.tokens.append(['Word token :', token])
                 i += len(token)
 
             elif self.code[i].isspace(): #space, \n, \t
@@ -36,23 +33,23 @@ class scanner():
 
             else: #Bracket Operator others or error
                 if self.code[i] in self.Bracket:
-                    self.tokens.append('Bracket token : '+self.code[i])
+                    self.tokens.append(['Bracket token : '+self.code[i]])
                     i += 1
                 elif self.code[i] in self.operator:
                     if self.check_equal(i):
-                        self.tokens.append('Operator token : ' + '==')
+                        self.tokens.append(['Operator token : ', '=='])
                         i += 2
                     else :
-                        self.tokens.append('Operator token : ' + self.code[i])
+                        self.tokens.append(['Operator token : ', self.code[i]])
                         i += 1
                 elif self.code[i] in self.special_character:
-                    self.tokens.append('Other token : '+self.code[i])
+                    self.tokens.append(['Other token : ',self.code[i]])
                     i +=1
 
                 else:
-                    print ("Error occurred in lexical analysis on line " + str(linectr + 1) + ": '" + self.code[i] + "' is not a valid token.") #debugging purposes
                     self.tokens.append(0)
-                    return
+                    print("Error occurr-ed in lexical analysis")
+                    sys.exit()
 
     def check_equal(self, i):
         if self.code[i] == '=' and i < self.length -1 :

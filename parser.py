@@ -272,6 +272,9 @@ if __name__ == "__main__":
     scan = scanner(code)
     scan.lexical()
     tokens = scan.tokens
+    for token in tokens:
+        print(token)
+    print()
 
     parsing = parser(tokens, "grammar2.txt")
     parsing.get_FIRST()

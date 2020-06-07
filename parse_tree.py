@@ -6,7 +6,7 @@ class Node():
         self.parent = parent
         self.index = index
 
-    def set_child(self, data): #2차원 리스트 데이터랑 leaf 인지 여부
+    def set_child(self, data):
         for idx, item in enumerate(data):
             node = Node(item,self, idx)
             self.children.append(node)
