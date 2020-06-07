@@ -2,9 +2,10 @@ int limit = 100000000;
 int a = 0;
 int b = 1;
 int c = 0;
-int ctr = 0;
+int ctr = 1;
 
-WHILE (c < limit) {
+WHILE (limit > c) THEN {
+    c = a + b;
     a = b;
     b = c;
     ctr = ctr + 1;

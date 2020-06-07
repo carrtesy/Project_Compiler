@@ -12,7 +12,10 @@ class scanner():
 
     def lexical(self):
         i = 0
+        linectr = 0
         while i < self.length:
+            if self.code[i] == '\n': #counts \n for error message if lexical analysis fails
+                linectr += 1
             if self.code[i].isdigit(): # num
                 token = self.get_number(i)
                 self.tokens.append('Num token :' + token)
@@ -47,6 +50,7 @@ class scanner():
                     i +=1
 
                 else:
+                    print ("Error occurred in lexical analysis on line " + str(linectr + 1) + ": '" + self.code[i] + "' is not a valid token.") #debugging purposes
                     self.tokens.append(0)
                     return
 
