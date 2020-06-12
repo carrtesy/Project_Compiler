@@ -6,7 +6,7 @@ class scanner():
         self.Bracket = ['(', ')', '{', '}']
         self.special_character = [';',',']
         self.types = ['int', 'char']
-        self.statement = ['IF', 'THEN', 'ELSE' ]
+        self.statement = ['IF', 'THEN', 'ELSE', "WHILE" ]
         self.operator = ['>', '==', '+', '*', '=']
         self.tokens = []
 
@@ -33,7 +33,7 @@ class scanner():
 
             else: #Bracket Operator others or error
                 if self.code[i] in self.Bracket:
-                    self.tokens.append(['Bracket token : '+self.code[i]])
+                    self.tokens.append(['Bracket token : ',self.code[i]])
                     i += 1
                 elif self.code[i] in self.operator:
                     if self.check_equal(i):

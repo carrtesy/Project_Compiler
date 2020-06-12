@@ -23,6 +23,7 @@ class parser():
         keys = list(self.grammar.keys())
         for key in keys:
             self.first[key] = self.FIRST(key)
+        # 그냥 반복을 돌릴시 재귀함수 호출의 제한을 넘어 수동으로 추가합니다.
 
     def get_FOLLOW(self):
         self.follow = dict()
@@ -48,12 +49,18 @@ class parser():
                 first2 = self.First(right)
                 for i in first2:
                     if i != '':
+                        if self.table[index][self.non_terminal.index(i)]!=0:
+                            print("GERSFGERF")
                         self.table[index][self.non_terminal.index(i)] = right
                 if '' in right:
                     for i in follow:
                         if i == '$':
+                            if self.table[index][-1]!= 0:
+                                print("GERSFGERF")
                             self.table[index][-1] = right
                         else:
+                            if self.table[index][self.non_terminal.index(i)] != 0:
+                                print("GERSFGERF")
                             self.table[index][self.non_terminal.index(i)] = right
                     if '$' in follow:
                         self.table[index][-1] = right
@@ -74,6 +81,8 @@ class parser():
             if top in non_terminal:
                 if symbol == top:
                     input_txt = input_txt[1:]
+                    if symbol == '[a-zA-Z]*':
+                        pass
                     self.parse_tree = self.parse_tree.get_next()
                 else:
                     check = True
@@ -97,6 +106,17 @@ class parser():
             self.parse_tree = self.parse_tree.get_root()
             return self.parse_tree
 
+    def tokens_to_input(self,tokens):
+        input_list = []
+        for token_type, token in tokens:
+            if token_type=="Word token :":
+                input_list.append("[a-zA-Z]*")
+            elif token_type == "Num token":
+                input_list.append("[0-9]*")
+            else:
+                input_list.append(token)
+        return input_list
+
 
 
 
@@ -114,7 +134,7 @@ class parser():
 
             key = key.strip()
             grammar[key] = []
-            value = value.split("|")
+            value = value.replace('"','').split("|")
             for val in value:
                 val = val.split()
                 if len(val):
@@ -144,11 +164,15 @@ class parser():
                 prime = key + "'"
                 grammar[prime] = list()
                 for val in non_recursion:
-                    grammar[key].append(val+[prime])
+                    if val != ['']:
+                        grammar[key].append(val+[prime])
+                    else:
+                        grammar[key].append([prime])
 
                 for val in recursion:
                     grammar[prime].append(val + [prime])
                 grammar[prime].append([""])
+
         return grammar
 
 
@@ -196,6 +220,7 @@ class parser():
         return grammar
 
 
+
     def FIRST(self,key):
         keys = list(self.grammar.keys())
         values = self.grammar[key]
@@ -214,7 +239,7 @@ class parser():
         return first
 
     def First(self,key):
-        symbol = key[0];
+        symbol = key[0]
         result = set()
         if symbol in self.grammar.keys():
             if list(self.first[symbol])=={''}:
@@ -260,6 +285,7 @@ class parser():
             for values in self.grammar[terminal]:
                 for value in values:
                     if not value in (self.terminal + ['']):
+
                         self.non_terminal = self.non_terminal.union({value})
         self.non_terminal = list(self.non_terminal)
         self.non_terminal.sort()
@@ -277,12 +303,17 @@ if __name__ == "__main__":
     print()
 
     parsing = parser(tokens, "grammar2.txt")
-    parsing.get_FIRST()
-    parsing.get_FOLLOW()
-    parsing.get_Table()
+
     print("LL Grammar")
     for i in parsing.grammar:
-        print(i, parsing.grammar[i])
+        for j in parsing.grammar[i]:
+            if j[0]=='':
+                print(i, '->', "''")
+            else:
+                print(i,'->',' '.join(j))
+    parsing.get_FIRST()
+    parsing.get_FOLLOW()
+
     print("\nFIRST")
     for i in parsing.first:
         print(i, parsing.first[i])
@@ -290,6 +321,8 @@ if __name__ == "__main__":
     print("\nFOLLOW")
     for i in parsing.follow:
         print(i, parsing.follow[i])
+
+    parsing.get_Table()
     print("\n terminals")
     print(parsing.terminal)
     print("\n non terminals")
@@ -301,10 +334,12 @@ if __name__ == "__main__":
         print(parsing.terminal[i], parsing.table[i])
 
     print()
-    asdf = parsing.parsing(["word", '"("', '")"'])
+    input_list =parsing.tokens_to_input(tokens)
+    asdf = parsing.parsing(input_list)
     if asdf:
         parsing.parse_tree.node_print()
     else:
         print("input not accecpted")
+
 
 
