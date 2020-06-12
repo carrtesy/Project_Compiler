@@ -117,13 +117,6 @@ class parser():
                 input_list.append(token)
         return input_list
 
-
-
-
-
-
-
-
     def set_grammar(self):
         with open(self.grammar_path, 'r', encoding="utf-8") as g:
             grammar_txt = g.read()
@@ -219,21 +212,26 @@ class parser():
             index += 1
         return grammar
 
-
-
     def FIRST(self,key):
-        keys = list(self.grammar.keys())
-        values = self.grammar[key]
+        keys = list(self.grammar.keys()) # LHS of the Grammar
+        values = self.grammar[key] # RHS of the Grammar
         first = set()
         for value in values:
-
+            # first is non-terminal
             if value[0] in keys:
                 for symbol in value:
+                    # epsilon case handle. e.g. decls -> epsilon decls
+                    if(symbol == key):
+                        break
                     fst = self.FIRST(symbol)
+                    # if epsilon is in FIRST(symbol), next symbol is investigated
+                    if '' in fst:
+                        first = first.union(fst)
+                        continue
                     if len(fst) != 0:
                         first = first.union(fst)
                         break
-
+            # first is terminal
             else:
                 first = first.union({value[0]})
         return first
