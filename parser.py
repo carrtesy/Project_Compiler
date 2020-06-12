@@ -31,8 +31,13 @@ class parser():
         for key in keys:
             self.follow[key] = set([])
         self.follow[keys[0]] = self.follow[keys[0]].union({"$"})
-        for key in keys:
-            self.FOLLOW(key)
+
+        self.done = False
+
+        while not self.done:
+            self.done = True
+            for key in keys:
+                self.FOLLOW(key)
 
     def get_Table(self):
         self.table = []
@@ -236,17 +241,16 @@ class parser():
                 first = first.union({value[0]})
         return first
 
-    def First(self,key):
+    def First(self, key):
         symbol = key[0]
         result = set()
         if symbol in self.grammar.keys():
-            if list(self.first[symbol])=={''}:
-                if len(key)==1:
+            result = result.union(self.first[symbol])
+            if '' in self.first[symbol]:
+                if len(key) == 1:
                     result = result.union({''})
                 else:
                     result = result.union(self.First(key[1:]))
-            else:
-                result = result.union(self.first[symbol])
         else:
             result = result.union({symbol})
         return result
@@ -255,6 +259,11 @@ class parser():
 
     def FOLLOW(self,symbol):
         keys = list(self.grammar.keys())
+        check = dict()
+        for key in self.follow:
+            check[key] = set()
+            for val in self.follow[key]:
+                check[key].add(val)
         for key in keys:
             for values in self.grammar[key]:
                 for i in range(len(values)):
@@ -275,6 +284,8 @@ class parser():
                                 if not key in list(self.follow.keys()):
                                     self.FOLLOW(key)
                                 self.follow[symbol] = self.follow[symbol].union(self.follow[key])
+        if self.follow != check:
+            self.done = False
 
     def classify_symbol(self):
         self.terminal = list(self.grammar.keys())
@@ -338,6 +349,3 @@ if __name__ == "__main__":
         parsing.parse_tree.node_print()
     else:
         print("input not accecpted")
-
-
-
