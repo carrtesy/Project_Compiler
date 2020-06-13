@@ -81,13 +81,17 @@ class parser():
         check = False
         while len(stack) != 1:
             top = stack[0]
-
+            stack = stack[1:]
             symbol = input_txt[0]
             if top in non_terminal:
                 if symbol == top:
                     input_txt = input_txt[1:]
                     if symbol == '[a-zA-Z]*':
-                        pass
+                        self.parse_tree.id = self.word_tokens[0]
+                        self.word_tokens.remove(self.word_tokens[0])
+                    elif symbol == '[0-9]*':
+                        self.parse_tree.id = self.num_tokens[0]
+                        self.num_tokens.remove(self.num_tokens[0])
                     self.parse_tree = self.parse_tree.get_next()
                 else:
                     check = True
@@ -113,11 +117,15 @@ class parser():
 
     def tokens_to_input(self,tokens):
         input_list = []
+        self.word_tokens = []
+        self.num_tokens = []
         for token_type, token in tokens:
             if token_type=="Word token :":
                 input_list.append("[a-zA-Z]*")
+                self.word_tokens.append(token)
             elif token_type == "Num token":
                 input_list.append("[0-9]*")
+                self.num_tokens.append(token)
             else:
                 input_list.append(token)
         return input_list
@@ -345,7 +353,7 @@ if __name__ == "__main__":
         print(parsing.terminal[i], parsing.table[i])
 
     print()
-    input_list =parsing.tokens_to_input({})
+    input_list =parsing.tokens_to_input(tokens)
     asdf = parsing.parsing(input_list)
     if asdf:
         parsing.parse_tree.node_print()

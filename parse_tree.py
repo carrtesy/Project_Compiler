@@ -1,10 +1,12 @@
 
 class Node():
-    def __init__(self,data, parent, index):
+    def __init__(self,data, parent, index, id = None, scope = "global"):
         self.data = data
         self.children = []
         self.parent = parent
         self.index = index
+        self.id = id
+        self.scope = scope
 
     def set_child(self, data):
         for idx, item in enumerate(data):
@@ -36,7 +38,10 @@ class Node():
         while len(node.children) != 0:
             node = node.children[0]
         while node.parent != None:
-            print(node.data,end='')
+            if node.data in ['[0-9]*','[a-zA-Z]*']:
+                print(node.id, end= ' ')
+            else:
+                print(node.data,end=' ')
             node = node.get_next()
 
     def get_root(self):
