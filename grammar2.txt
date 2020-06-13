@@ -4,17 +4,15 @@ decls -> decls decl
 decl -> vtype words ";" ;
 words -> words "," word
  | word ;
-vtype -> int | char
-| ;
+vtype -> int | char  ;
 block -> "{" decls slist "}"
 | ;
 slist -> slist stat
-| stat ;
+| ;
 stat -> IF cond THEN block ELSE block
 | WHILE cond block
 | word "=" expr ";"
-| RETURN expr ";"
-| ;
+| RETURN expr ";" ;
 cond -> expr ">" expr
 | expr "==" expr ;
 expr -> term
@@ -22,5 +20,6 @@ expr -> term
 term -> fact
 | fact "*" fact ;
 fact -> num
-| word
-
+| word ;
+num -> [0-9]* ;
+word -> [a-zA-Z]*
