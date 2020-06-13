@@ -23,7 +23,6 @@ class parser():
         keys = list(self.grammar.keys())
         for key in keys:
             self.first[key] = self.FIRST(key)
-        # 그냥 반복을 돌릴시 재귀함수 호출의 제한을 넘어 수동으로 추가합니다.
 
     def get_FOLLOW(self):
         self.follow = dict()
@@ -39,8 +38,11 @@ class parser():
             for key in keys:
                 self.FOLLOW(key)
 
+
+
     def get_Table(self):
         self.table = []
+
         for i, terminal in enumerate(self.terminal):
             self.table.append([])
             for non_terminal in (self.non_terminal + ["$"]):
@@ -51,24 +53,23 @@ class parser():
             first = self.first[left]
             follow = self.follow[left]
             for right in self.grammar[left]:
-                first2 = self.First(right)
-                for i in first2:
-                    if i != '':
-                        if self.table[index][self.non_terminal.index(i)]!=0:
-                            print("GERSFGERF")
-                        self.table[index][self.non_terminal.index(i)] = right
-                if '' in right:
-                    for i in follow:
-                        if i == '$':
-                            if self.table[index][-1]!= 0:
-                                print("GERSFGERF")
+                fst = self.First(right)
+                for f in fst :
+                    if f != '':
+                        if self.table[index][self.non_terminal.index(f)]:
+                            print("FASDFASFSA",left,self.table[index][self.non_terminal.index(f)],right)
+                        self.table[index][self.non_terminal.index(f)] = right
+                if '' in fst:
+                    for flw in follow:
+                        if flw == "$":
+                            if self.table[index][-1]:
+                                print("QWERT",left, self.table[index][-1], right)
                             self.table[index][-1] = right
                         else:
-                            if self.table[index][self.non_terminal.index(i)] != 0:
-                                print("GERSFGERF")
-                            self.table[index][self.non_terminal.index(i)] = right
-                    if '$' in follow:
-                        self.table[index][-1] = right
+                            if self.table[index][self.non_terminal.index(flw)]:
+                                print("FASDFASFSA",left,self.table[index][self.non_terminal.index(flw)],right)
+                            self.table[index][self.non_terminal.index(flw)] = right
+
 
     def parsing(self,input_txt):
         terminal = {key : word for word, key in enumerate(self.terminal)}
@@ -80,8 +81,7 @@ class parser():
         check = False
         while len(stack) != 1:
             top = stack[0]
-            stack = stack[1:]
-            # print(stack, input_txt)
+
             symbol = input_txt[0]
             if top in non_terminal:
                 if symbol == top:
@@ -222,21 +222,23 @@ class parser():
         values = self.grammar[key] # RHS of the Grammar
         first = set()
         for value in values:
-            # first is non-terminal
+            # first is terminal
             if value[0] in keys:
-                for symbol in value:
+                for i, symbol in enumerate(value):
                     # epsilon case handle. e.g. decls -> epsilon decls
                     if(symbol == key):
                         break
                     fst = self.FIRST(symbol)
                     # if epsilon is in FIRST(symbol), next symbol is investigated
                     if '' in fst:
-                        first = first.union(fst)
+                        first = first.union(fst - {''})
+                        if i == len(value)-1:
+                            first.add('')
                         continue
                     if len(fst) != 0:
                         first = first.union(fst)
                         break
-            # first is terminal
+            # first is non terminal
             else:
                 first = first.union({value[0]})
         return first
@@ -343,7 +345,7 @@ if __name__ == "__main__":
         print(parsing.terminal[i], parsing.table[i])
 
     print()
-    input_list =parsing.tokens_to_input(tokens)
+    input_list =parsing.tokens_to_input({})
     asdf = parsing.parsing(input_list)
     if asdf:
         parsing.parse_tree.node_print()
