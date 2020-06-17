@@ -50,6 +50,23 @@ class Node():
             node = node.parent
         return node
 
+    def set_symbol_table(self):
+        node = self
+        symbol_table =[]
+        while len(node.children) != 0:
+            node = node.children[0]
+        while node.parent != None:
+            if node.data in ["int","char"]:
+                tp = node.data
+                size = 4 if tp=="int" else 1
+                while node.data != ';' :
+                    node = node.get_next()
+                    if node.data == "[a-zA-Z]*":
+                        symbol_table.append([node.id,tp,"block local",size])
+            node = node.get_next()
+        return symbol_table
+
+
 if __name__ == "__main__":
     node = Node("asdf", None, 0)
     node.set_child([1,2,3])
