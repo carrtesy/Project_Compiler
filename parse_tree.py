@@ -9,6 +9,8 @@ class Node():
         self.scope = scope
 
     def __repr__(self, level = 0):
+        if(level == 0):
+            print("Abstract Syntax Tree")
         value = self.id if self.data in ['[0-9]*', '[a-zA-Z]*'] else self.data
         ret = str(level) + "|" + "\t\t" * level + repr(value)
         if len(self.children) == 0:
@@ -88,10 +90,3 @@ if __name__ == "__main__":
     #node2 = node.children[0].children[0]
     #node.node_print()
     print(node)
-
-    _node = node
-   # while _node != None :
-    #    print(node.data)
-     #   _node = _node.get_next()
-
-

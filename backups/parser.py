@@ -315,7 +315,7 @@ class parser():
 
 if __name__ == "__main__":
     # open test file
-    with open("./testfiles/testfile_1.txt", 'r') as test:
+    with open("../testfiles/testfile_1.txt", 'r') as test:
         code = test.read()
 
     # scanner : print tokens
@@ -327,7 +327,7 @@ if __name__ == "__main__":
     print()
 
     # LL parser
-    parsing = parser(tokens, "grammar2.txt")
+    parsing = parser(tokens, "../grammar2.txt")
 
     # LL Grammar
     print("LL Grammar")
