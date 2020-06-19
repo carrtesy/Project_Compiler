@@ -8,6 +8,17 @@ class Node():
         self.id = id
         self.scope = scope
 
+    def __repr__(self, level = 0):
+        value = self.id if self.data in ['[0-9]*', '[a-zA-Z]*'] else self.data
+        ret = str(level) + "|" + "\t\t" * level + repr(value)
+        if len(self.children) == 0:
+            ret += " *LEAF\n"
+        else:
+            ret += "\n"
+        for child in self.children:
+            ret += child.__repr__(level + 1)
+        return ret
+
     def set_child(self, data):
         for idx, item in enumerate(data):
             node = Node(item,self, idx)
@@ -74,11 +85,13 @@ if __name__ == "__main__":
     node.children[1].set_child([5,6])
     node.children[2].set_child([7,8])
     node.children[2].children[0].set_child([9])
-    node2 = node.children[0].children[0]
-    node.node_print()
+    #node2 = node.children[0].children[0]
+    #node.node_print()
+    print(node)
 
-    while node2 != None:
-        print(node2.data)
-        node2 = node2.get_next()
+    _node = node
+   # while _node != None :
+    #    print(node.data)
+     #   _node = _node.get_next()
 
 

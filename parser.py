@@ -372,6 +372,7 @@ if __name__ == "__main__":
     input_list =parsing.tokens_to_input(tokens)
     asdf = parsing.parsing(input_list)
     if asdf:
+        print(asdf)
         parsing.parse_tree.node_print()
     else:
         print("input not accecpted")
