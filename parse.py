@@ -316,7 +316,7 @@ class parser():
 
 
 if __name__ == "__main__":
-    with open("testfile.txt", 'r') as test:
+    with open("testfiles/testfile_1.txt", 'r') as test:
         code = test.read()
 
     scan = scanner(code)

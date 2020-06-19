@@ -1,3 +1,4 @@
+main(){
 int a, b, c = 1;
 char d, e;
 
@@ -11,4 +12,5 @@ IF (a+1 > c) THEN {
 }
 ELSE {
 	e=3;
+}
 }

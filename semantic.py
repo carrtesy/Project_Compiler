@@ -35,7 +35,7 @@ class semantic():
 
 
 if __name__ == "__main__":
-    with open("testfile.txt", 'r') as test:
+    with open("testfile3.txt", 'r') as test:
         code = test.read()
 
     scan = scanner(code)
