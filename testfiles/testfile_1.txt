@@ -1,13 +1,13 @@
 main(){
-int a, b, c = 1;
+int a, b, c;
 char d, e;
 
-b = 3
+b = 3;
 
-a = b + 14 + 0;
+a = b + 14;
 d = 4;
 
-IF (a+1 > c) THEN {
+IF a + 1 > c  THEN {
 	e=5;
 }
 ELSE {
