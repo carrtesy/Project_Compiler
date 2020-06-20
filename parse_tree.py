@@ -10,7 +10,7 @@ class Node():
 
     def __repr__(self, level = 0):
         if(level == 0):
-            print("Abstract Syntax Tree")
+            print("Syntax Tree")
         value = self.id if self.data in ['[0-9]*', '[a-zA-Z]*'] else self.data
         ret = str(level) + "|" + "\t\t" * level + repr(value)
         if len(self.children) == 0:
@@ -26,6 +26,64 @@ class Node():
             node = Node(item,self, idx)
             self.children.append(node)
         return self.children[0]
+
+    def get_node_with_keyword(self, str):
+        set = []
+        if self.data == str:
+            set.append(self)
+
+        for child in self.children:
+            result = child.get_node_with_keyword(str)
+            for entry in result:
+                set.append(entry)
+        return set
+
+    def getleft(self):
+        node = self
+        while node.index == 0:
+            node = node.parent
+        return node.parent.children[node.index-1]
+
+    def getright(self):
+        node = self
+        while True:
+            if(len(node.parent.children) > node.index + 1):
+                break
+            else:
+                node = node.parent
+        return node.parent.children[node.index+1]
+
+
+    def get_binarySyntaxTree(self):
+        operators = ["=", "+", "*", ">"]
+        bfs = []
+        root = None
+
+        for child in self.children:
+            bfs.append(child)
+
+        while True:
+            node = bfs.pop(0)
+            if node.data in operators:
+                if root == None:
+                    root = Node(node.data, node.parent, node.index, node.id)
+
+                if(len(root.children) == 0):
+                    left = node.getleft()
+                    root.children.append(left.get_binarySyntaxTree())
+                    right = node.getright()
+                    root.children.append(right.get_binarySyntaxTree())
+
+            else:
+                for grandchild in node.children:
+                    bfs.append(grandchild)
+            if len(bfs) == 0:
+                if(root == None):
+                    root = Node(node.data, node.parent, node.index, node.id)
+                break
+
+        return root
+
 
     def get_next(self):
         index = self.index

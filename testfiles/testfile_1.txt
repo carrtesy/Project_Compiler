@@ -5,7 +5,7 @@ char d, e;
 b = 3;
 
 a = b + 14;
-d = 4;
+d = 4 * 3 + 2 * 1;
 
 IF a + 1 > c  THEN {
 	e=5;
