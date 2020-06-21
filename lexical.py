@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import sys
 class scanner():
     def __init__(self, code: str):
@@ -7,6 +8,7 @@ class scanner():
         self.special_character = [';',',']
         self.types = ['int', 'char']
         self.statement = ['IF', 'THEN', 'ELSE', "WHILE" ]
+        self.Return = ["RETURN"]
         self.operator = ['>', '==', '+', '*', '=']
         self.tokens = []
 
@@ -24,6 +26,8 @@ class scanner():
                     self.tokens.append(['Type token :', token])
                 elif token in self.statement:
                     self.tokens.append(['Statement token :', token])
+                elif token in self.Return:
+                    self.tokens.append(['RETURN token :', token])
                 else:
                     self.tokens.append(['Word token :', token])
                 i += len(token)

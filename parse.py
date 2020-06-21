@@ -1,4 +1,4 @@
-import sys
+#!/usr/bin/env python
 from lexical import scanner
 from parse_tree import Node
 class parser():
@@ -55,18 +55,13 @@ class parser():
                 fst = self.First(right)
                 for f in fst :
                     if f != '':
-                        if self.table[index][self.non_terminal.index(f)]:
-                            print("FASDFASFSA",left,self.table[index][self.non_terminal.index(f)],right)
                         self.table[index][self.non_terminal.index(f)] = right
                 if '' in fst:
                     for flw in follow:
                         if flw == "$":
-                            if self.table[index][-1]:
-                                print("QWERT",left, self.table[index][-1], right)
                             self.table[index][-1] = right
                         else:
-                            if self.table[index][self.non_terminal.index(flw)]:
-                                print("FASDFASFSA",left,self.table[index][self.non_terminal.index(flw)],right)
+
                             self.table[index][self.non_terminal.index(flw)] = right
 
 
@@ -75,10 +70,12 @@ class parser():
         non_terminal = { key : word for word, key in enumerate(self.non_terminal)}
         non_terminal['$'] = len(non_terminal)
         input_txt.append("$")
+
         stack = [self.terminal[0],'$']
-        self.parse_tree = Node(stack[-1],None,0)
+        self.parse_tree = Node(stack[0],None,0)
         check = False
         while len(stack) != 1:
+
             top = stack[0]
             stack = stack[1:]
             symbol = input_txt[0]
@@ -93,6 +90,7 @@ class parser():
                         self.num_tokens.remove(self.num_tokens[0])
                     self.parse_tree = self.parse_tree.get_next()
                 else:
+
                     check = True
                     break
             else:

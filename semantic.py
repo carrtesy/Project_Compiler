@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from lexical import scanner
 from parse import parser
 
@@ -5,13 +6,14 @@ class semantic():
     def __init__(self,ps):
         self.ps = ps
         self.g=1
+        self.fname = ps.parse_tree.children[0].children[0].id
 
     def type_check(self):
         symbol = [s[0] for s in self.ps.symbol_table]
         types = [s[1] for s in self.ps.symbol_table]
         if len(symbol) != len(set(symbol)):
             print("\nsame variable declared more than twice")
-            return 0
+            exit()
 
         st = {s[0]: s[1] for s in self.ps.symbol_table}
         node = self.ps.parse_tree
@@ -34,7 +36,11 @@ class semantic():
             elif node.data in [";", "THEN", "{"]:
                 ck = True
             node = node.get_next()
-
+    def ir(self):
+        ir = [["BEGIN " + self.fname,None]]
+        ir += self.make_IR(self.ps.parse_tree)
+        ir += [["END " + self.fname,None]]
+        return ir
     def make_IR(self,node):
         self.cur = node
         ir = []
@@ -79,6 +85,7 @@ class semantic():
         ir.append(["if" + cond_txt + " goto L" + l1, cond])
         ir = ir + else_ir
         ir.append(["goto L" + l2, None])
+        ir.append(["L" + l1, None])
         ir = ir + then_ir
         ir.append(["L"+l2,None])
 
@@ -114,8 +121,6 @@ class semantic():
         return ir
 
 
-    def block(self):
-        pass
 
     def make_IR2(self,node):
         cur = node
@@ -236,7 +241,9 @@ if __name__ == "__main__":
 
     asdf = semantic(parsing)
     asdf.type_check()
-    ir = asdf.make_IR(asdf.ps.parse_tree)
+    ir = asdf.ir()
     print("\nIntermediate Representation")
-    for i,r in enumerate(ir):
-        print(str(i)+". "+r[0])
+    for i, r in enumerate(ir):
+        print(str(i) + ". " + r[0])
+    qwert = code_generator(ir)
+    qwert.generate()
